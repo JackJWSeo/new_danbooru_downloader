@@ -1,0 +1,3 @@
+*.pyc
+ui_last_state.json
+danbooru_downloader.py
