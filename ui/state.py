@@ -1,7 +1,10 @@
-class AppState:
-    IDLE = "IDLE"
-    LOADING = "LOADING"
-    READY = "READY"
-    RUNNING = "RUNNING"
-    STOPPING = "STOPPING"
-    FINISHED = "FINISHED"
+from enum import Enum, auto
+
+
+class AppState(Enum):
+    IDLE = auto()
+    LOADING = auto()
+    READY = auto()
+    RUNNING = auto()
+    STOPPING = auto()
+    FINISHED = auto()
