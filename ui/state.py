@@ -1,0 +1,7 @@
+class AppState:
+    IDLE = "IDLE"
+    LOADING = "LOADING"
+    READY = "READY"
+    RUNNING = "RUNNING"
+    STOPPING = "STOPPING"
+    FINISHED = "FINISHED"
