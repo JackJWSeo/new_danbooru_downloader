@@ -2,7 +2,7 @@ import os
 import threading
 
 from core.artist_list import read_completed, append_completed
-from core.downloader import download_artist, get_total_count_by_pages
+from core.downloader import download_artist, get_total_count_by_pages, sanitize_folder_name
 from ui.state import AppState
 
 
@@ -35,7 +35,8 @@ def start_download_worker(app):
             if artist in completed:
                 continue
 
-            save_dir = os.path.join(base_dir, artist)
+            safe_name = sanitize_folder_name(artist)
+            save_dir = os.path.join(base_dir, safe_name)
             os.makedirs(save_dir, exist_ok=True)
             app.current_save_dir = save_dir
 

@@ -1,7 +1,42 @@
 import os
 import time
 import requests
+import re
 from typing import Tuple
+
+WINDOWS_RESERVED_NAMES = {
+    "CON", "PRN", "AUX", "NUL",
+    *(f"COM{i}" for i in range(1, 10)),
+    *(f"LPT{i}" for i in range(1, 10)),
+}
+
+INVALID_CHARS = r'[\\/:*?"<>|]'
+
+
+def sanitize_folder_name(name: str) -> str:
+    if not name:
+        return "_"
+
+    # 1) 금지 문자 치환
+    name = re.sub(INVALID_CHARS, "_", name)
+
+    # 2) 따옴표 개별 처리
+    name = name.replace('"', "'")
+
+    # 3) 연속 공백 → _
+    name = re.sub(r"\s+", "_", name)
+
+    # 4) 끝의 점/공백 제거
+    name = name.rstrip(" .")
+
+    # 5) 예약 이름 처리
+    upper = name.upper()
+    if upper in WINDOWS_RESERVED_NAMES:
+        name = f"_{name}_"
+
+    # 6) 너무 길면 컷 (윈도우 안정성)
+    return name[:240]
+
 
 from config import (
     BASE_URL,
@@ -168,8 +203,9 @@ def download_artist(
         if total_count <= 0:
             return 0.0
         return (initial_exist + downloaded) / total_count
-
-    save_dir = os.path.join(base_dir, artist)
+    
+    safe_name = sanitize_folder_name(artist)
+    save_dir = os.path.join(base_dir, safe_name)
     save_dir_created = False
 
     while True:
